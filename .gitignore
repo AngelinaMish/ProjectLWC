@@ -6,6 +6,14 @@
 .sfdx/
 .localdevserver/
 
+#metadata
+.xml
+
+#forceignor
+.forceignore
+.prettierrc
+.sfdx-project.json
+
 # Logs
 logs
 *.log
@@ -18,6 +26,8 @@ node_modules/
 
 # Eslint cache
 .eslintcache
+.eslintrc.json
+.jsconfig.json
 
 # MacOS system files
 .DS_Store
