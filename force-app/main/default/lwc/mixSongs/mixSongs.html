@@ -1,0 +1,30 @@
+<template>
+    <div >
+        <!-- <lightning-combobox 
+                name = "genre"
+                label = "Song Genre filtr"
+                value = {valueGenre}
+                options = {genreList}
+                onchange = {handleChangeGenre}>
+
+        </lightning-combobox> -->
+        <lightning-datatable
+                    key-field= "Id"
+                    data={songsList}
+                    columns={columns}>
+        </lightning-datatable>
+        <div class="  slds-align_absolute-center slds-p-top_small" >
+            <span >
+                <lightning-button label="First" onclick={handleFirstPage} disabled={isButtonPrevDisabled}></lightning-button>
+                <lightning-button label="Previous" onclick={handlePrevPage} disabled={isButtonPrevDisabled}></lightning-button>
+            </span>
+            <span class="slds-p-left_small slds-p-right_small">Page {pageNumber} of {totalPageNmber}</span>
+            <span>
+                <lightning-button label="Next" onclick={handleNextPage} disabled={isButtonNextDisabled}></lightning-button>
+                <lightning-button label="Last" onclick={handleLastPage} disabled={isButtonNextDisabled}></lightning-button>
+            </span>
+        </div>
+        
+    </div>
+    
+</template>

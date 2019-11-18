@@ -1,0 +1,19 @@
+<template>
+   <div>
+    <lightning-record-edit-form
+        record-id= {recordId}
+        object-api-name="Mix__c">
+        <div class="slds-grid  slds-grid_align-cente slds-align_absolute-center" >
+            <div class="slds-col " style="max-width: 350px; padding-right: 30px;">
+                <lightning-input-field required= {isTrue} field-name='Name' value= {name} ></lightning-input-field>
+            </div>
+            <div class="slds-col" style="max-width: 350px;">
+                <lightning-input-field required= {isTrue} field-name='Customer__c' ></lightning-input-field>
+            </div>
+        </div>
+         
+      
+    </lightning-record-edit-form>
+</div>
+    
+</template>

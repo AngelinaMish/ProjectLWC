@@ -1,0 +1,24 @@
+<template>
+    <lightning-card>
+        {name}
+    </lightning-card>
+    <lightning-card >
+        <div class="slds-align_absolute-center">
+                <lightning-button label='Save' onclick={handleSaveClick} style="padding-right: 20px;"></lightning-button>
+                <lightning-button label='Cancel' onclick={handleSaveClick} ></lightning-button>
+        </div> 
+    </lightning-card>
+    <lightning-card>
+        <c-mix-details record-id= {recordId} name= {name}>
+        </c-mix-details>
+    </lightning-card>
+    <lightning-card>
+        <c-mix-summary>
+        </c-mix-summary>
+    </lightning-card>
+    <lightning-card>
+        <c-mix-songs>
+        </c-mix-songs>
+    </lightning-card>
+    
+</template>
