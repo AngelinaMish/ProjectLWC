@@ -1,22 +1,28 @@
 <template>
     <div >
-        <!-- <lightning-combobox 
+        <lightning-combobox 
                 name = "genre"
                 label = "Song Genre filtr"
                 value = {valueGenre}
                 options = {genreList}
-                onchange = {handleChangeGenre}>
+                placeholder="Select Genre"
+                onchange = {handleChangeGenre}
+                style="overflow: initial; max-width: 350px;"
+                class="slds-p-bottom_large">
 
-        </lightning-combobox> -->
+        </lightning-combobox>
         <lightning-datatable
                     key-field= "Id"
                     data={songsList}
-                    columns={columns}>
+                    columns={columns}
+                    onrowselection={getSelectedRows}
+                    max-row-selection= {maxRowSelection}
+                    selected-rows={selectedRows}>
         </lightning-datatable>
-        <div class="  slds-align_absolute-center slds-p-top_small" >
+        <div class="slds-align_absolute-center slds-p-top_small" >
             <span >
                 <lightning-button label="First" onclick={handleFirstPage} disabled={isButtonPrevDisabled}></lightning-button>
-                <lightning-button label="Previous" onclick={handlePrevPage} disabled={isButtonPrevDisabled}></lightning-button>
+                <lightning-button label="Previous" onclick={handlePreviousPage} disabled={isButtonPrevDisabled}></lightning-button>
             </span>
             <span class="slds-p-left_small slds-p-right_small">Page {pageNumber} of {totalPageNmber}</span>
             <span>
@@ -24,7 +30,6 @@
                 <lightning-button label="Last" onclick={handleLastPage} disabled={isButtonNextDisabled}></lightning-button>
             </span>
         </div>
-        
     </div>
     
 </template>

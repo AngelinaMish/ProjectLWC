@@ -3,6 +3,9 @@
         "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
+            "c/mixSongs": [
+                "mixSongs/mixSongs.js"
+            ],
             "c/mixPage": [
                 "mixPage/mixPage.js"
             ],
@@ -11,9 +14,6 @@
             ],
             "c/mixSummary": [
                 "mixSummary/mixSummary.js"
-            ],
-            "c/mixSongs": [
-                "mixSongs/mixSongs.js"
             ]
         }
     },
