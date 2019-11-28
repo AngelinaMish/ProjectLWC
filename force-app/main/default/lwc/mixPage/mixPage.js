@@ -14,29 +14,38 @@ export default class mixPage extends LightningElement {
     @track mixLength;
     @track songsIds;
     mixDetails;
+    errorFromMixDetails;
 
     @wire(getRecord, { recordId: '$recordId', fields })
     mix;
 
     get name() {
+        let returnName = getFieldValue(this.mix.data, NAME_FIELD);
 
-        return getFieldValue(this.mix.data, NAME_FIELD);
-    }
-
-    setMixDetails(event){
-       
-        this.mixDetails = {
-            "Id": this.recordId,
-            "Name": event.detail.name,
-            "Customer__c": event.detail.contact
+        if (returnName) {
+            return returnName;
         }
+        return 'NEW';
     }
 
-    handleSaveClick() {
+    setMixDetails(event) {
 
-        let isError = this.template.querySelector('c-mix-details').getMixDetails();
-    
-        if(!isError){
+        if (event.detail.isError) {
+            this.errorFromMixDetails = true;
+        }
+        else {
+            this.mixDetails = {
+                "Id": this.recordId,
+                "Name": event.detail.name,
+                "Customer__c": event.detail.contact
+            }
+        } 
+    }
+
+    handleSaveClick() {    
+        this.template.querySelector('c-mix-details').getMixDetails();
+        
+        if(this.errorFromMixDetails) {
             return;
         }
 
@@ -48,34 +57,30 @@ export default class mixPage extends LightningElement {
                 this.showToast('Success','Mix was created', 'success' );
                 this.navigateToListView();
             })
-            .catch((error) => {
-                this.showToast('Error', error, 'error' );
+            .catch(() => {
+                this.showToast('Error', 'Please Select Song with license', 'error' );
             });
     }
 
     rowSelectedHandler(event) {
-
-        this.songsIds =  event.detail.songsIds;
+        this.songsIds = event.detail.songsIds;
         this.template.querySelector('c-mix-summary').setSettings(event.detail);
     }
 
     showToastHandler(event) {
-
         this.showToast(event.detail.title, event.detail.message, event.detail.variant);
     }
 
     showToast(title, message, variant) {
-
         const showToast = new ShowToastEvent({
-                title: title,
-                message: message,
-                variant: variant
-            });
-            this.dispatchEvent(showToast);
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(showToast);
     }
 
     navigateToListView() {
-
         window.location.href = window.location.port + '/lightning/o/Mix__c/list?filterName=Recent';
     }
 }

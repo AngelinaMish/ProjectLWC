@@ -2,8 +2,10 @@ import { LightningElement, track, api} from 'lwc';
 
 export default class mixSummary extends LightningElement {
 
+    // Add constants for limits
     @track  remainingTracks = 20;
     @track remainingMixLength = 90;
+    
     @track trackCount = 0;
     @track mixLength = 0;
 
