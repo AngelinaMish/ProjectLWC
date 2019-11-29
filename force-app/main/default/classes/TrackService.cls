@@ -1,10 +1,8 @@
-// Fix private methods!
 public class TrackService
  {
-    
     public static void updateRelatedFieldsForInsert(List<Track__c> tracks)
     { 
-        Map<Id, Song__c> songsWithGenre =  new Map <Id, Song__c>();
+        Map<Id, Song__c> songsWithGenre = new Map <Id, Song__c>();
         songsWithGenre = getGenreSongs(tracks);
         updateSongsTrackCount(songsWithGenre, tracks, true);
         updateMixGengre(tracks, songsWithGenre);
@@ -17,6 +15,7 @@ public class TrackService
         for (Track__c track : tracks)
         {
             List<Id> songsIdsForMix = songsIdsByMixesIds.get(track.Mix__c);
+
             if (songsIdsForMix != null)
             {
                 songsIdsForMix.add(track.Song__c);
@@ -60,48 +59,52 @@ public class TrackService
             
             primarAndSecondaryGenre = sortMapByKeyAndValue(genreValues);
             mix.Primary_Genre__c = primarAndSecondaryGenre[0];
+
             if(primarAndSecondaryGenre.size() > 1)
             {
                 mix.Secondary_Genre__c = primarAndSecondaryGenre[1];
             }
+
             mixesToUpdate.add(mix);
         }
 
         update mixesToUpdate;
     }
 
-    public static List<String> sortMapByKeyAndValue(Map<String, Integer> mapToSort)
+    private static List<String> sortMapByKeyAndValue(Map<String, Integer> mapToSort)
     {
         List<String> keys = new List<String>(mapToSort.keySet());
         List<Integer> values = new List<Integer>(mapToSort.values());
-        List<String> primarAndSecondaryGenre = new String[2];
+        List<String> primarAndSecondaryGenre = new List<String>();
         String primaryGenre;
         String secondaryGenre;
         keys.sort();
         values.sort();
         Integer sizeValues = values.size();
-        Integer primaryCount = values[sizeValues-1];
+        Integer primaryCount = values[sizeValues - 1];
         Integer secondaryCount;
-        if (sizeValues > 1 )
+
+        if (sizeValues > 1)
         {
-            secondaryCount = values[sizeValues-2];
+            secondaryCount = values[sizeValues - 2];
         }
     
         for (String key : keys)
         {
             Integer value = mapToSort.get(key);
+     
             if (value == primaryCount && String.isEmpty(primaryGenre))
             {
-                primaryGenre = key;
-                primarAndSecondaryGenre.add(0, key);
+                primaryGenre = key;     
             } 
             else if (sizeValues > 1 && value == secondaryCount && String.isEmpty(secondaryGenre))
             {
                 secondaryGenre = key;
-                primarAndSecondaryGenre.add(1,key);
             }
         }
 
+        primarAndSecondaryGenre.add(primaryGenre);
+        primarAndSecondaryGenre.add(secondaryGenre);
         return primarAndSecondaryGenre;
     }
 
@@ -118,16 +121,17 @@ public class TrackService
             SELECT Id, Name, Genre__c, Track_Count__c 
             FROM Song__c 
             WHERE Id IN :songsIds
-            ]);
+        ]);
     }
 
-    public static void updateSongsTrackCount (Map<Id, Song__c> songs, List<Track__c> tracks, Boolean isInsert)
+    private static void updateSongsTrackCount(Map<Id, Song__c> songs, List<Track__c> tracks, Boolean isInsert)
     {
         Map<Id, Integer> idSongsAndCounts = new Map<Id, Integer>();
 
         for (Track__c track : tracks)
         {
             Integer count = idSongsAndCounts.get(track.Song__c);
+
             if(count != null)
             {
                 idSongsAndCounts.put(track.Song__c, count + 1);
@@ -142,11 +146,11 @@ public class TrackService
         {
             if(isInsert)
             {
-                song.Track_Count__c = song.Track_Count__c + idSongsAndCounts.get(song.Id);
+                song.Track_Count__c += + idSongsAndCounts.get(song.Id);
             }
             else 
             {
-                song.Track_Count__c = song.Track_Count__c - idSongsAndCounts.get(song.Id);
+                song.Track_Count__c -= idSongsAndCounts.get(song.Id);
             }
         }
         

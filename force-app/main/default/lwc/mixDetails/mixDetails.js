@@ -1,6 +1,7 @@
 import { LightningElement, api } from 'lwc';
 
 export default class mixDetails extends LightningElement {
+    
     @api recordId;
     @api
     getMixDetails() {
@@ -9,28 +10,42 @@ export default class mixDetails extends LightningElement {
         var mixDetailsValues;
 
         if (!name) {
-            const message = { title: 'Error', message: 'Please fill Name', variant: 'error' };
+            const message = {
+                title: 'Error',
+                message: 'Please fill Name',
+                variant: 'error'
+            };
             this.fireShowToast(message);
-            mixDetailsValues = { isError: true };
-        }
-        else if (!contact) {
-            const message = { title: 'Error', message: 'Please fill Contact', variant: 'error' };
+            mixDetailsValues = {
+                isError: true
+            };
+        } else if (!contact) {
+            const message = {
+                title: 'Error',
+                message: 'Please fill Contact',
+                variant: 'error'
+            };
             this.fireShowToast(message);
-            mixDetailsValues = { isError: true };
-        }
-        else {
+            mixDetailsValues = {
+                isError: true
+            };
+        } else {
             mixDetailsValues = {
                 name: name,
                 contact: contact
             };
         }
 
-        const setMixDetailsEvent = new CustomEvent('mixdetails', { detail: mixDetailsValues })
+        const setMixDetailsEvent = new CustomEvent('mixdetails', {
+            detail: mixDetailsValues
+        })
         this.dispatchEvent(setMixDetailsEvent);
     }
 
     fireShowToast(message) {
-        const showToastEvent = new CustomEvent('showtoast', { detail: message });
+        const showToastEvent = new CustomEvent('showtoast', {
+            detail: message
+        });
         this.dispatchEvent(showToastEvent);
     }
 }

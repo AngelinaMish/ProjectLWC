@@ -1,15 +1,14 @@
-<!--FIX HTML + JS-->
 <template>
     <div>
-        <div class="slds-grid  slds-grid_align-cente slds-align_absolute-center" >
-            <span class="slds-col"  style="max-width: 350px;">
-                <div >Track Count    {trackCount}</div>
-                <div >Mix Length (m) {mixLength}</div>
-            </span>
-            <span class="slds-col"  style="max-width: 350px;">
-                <div>Remaining tracks   {remainingTracks}</div>
-                <div>Remaining Mix Length (m)   {remainingMixLength}</div>
-            </span>
+        <div class="slds-grid  slds-grid_align-cente slds-align_absolute-center">
+            <div class="slds-col" style="max-width: 200px; padding-right: 50px;">
+                <div style="text-align: right;">Track Count {trackCount}</div>
+                <div style="text-align: right;">Mix Length (m) {mixLength}</div>
+            </div>
+            <div class="slds-col" style="max-width: 200px;">
+                <div style="text-align: right;">Remaining tracks {remainingTracks}</div>
+                <div style="text-align: right;">Remaining Mix Length (m) {remainingMixLength}</div>
+            </div>
         </div>
     </div>
 </template>

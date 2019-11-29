@@ -1,7 +1,6 @@
 import { LightningElement, track, api, wire} from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-
-import saveMix from '@salesforce/apex/mixSongsController.saveMix';
+import saveMix from '@salesforce/apex/MixPageController.saveMix';
 import NAME_FIELD from '@salesforce/schema/Mix__c.Name';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -10,9 +9,11 @@ const fields = [NAME_FIELD];
 export default class mixPage extends LightningElement {
     
     @api recordId;
+
     @track trackCount;
     @track mixLength;
     @track songsIds;
+
     mixDetails;
     errorFromMixDetails;
 
@@ -32,33 +33,32 @@ export default class mixPage extends LightningElement {
 
         if (event.detail.isError) {
             this.errorFromMixDetails = true;
-        }
-        else {
+        } else {
             this.mixDetails = {
                 "Id": this.recordId,
                 "Name": event.detail.name,
                 "Customer__c": event.detail.contact
             }
-        } 
+        }
     }
 
-    handleSaveClick() {    
+    handleSaveClick() {
         this.template.querySelector('c-mix-details').getMixDetails();
-        
-        if(this.errorFromMixDetails) {
+
+        if (this.errorFromMixDetails) {
             return;
         }
 
         saveMix({
-            songsIds: Array.from(this.songsIds),
-            mixId: this.mixDetails
-        })
-            .then (() => {
-                this.showToast('Success','Mix was created', 'success' );
+                songsIds: Array.from(this.songsIds),
+                mixId: this.mixDetails
+            })
+            .then(() => {
+                this.showToast('Success', 'Mix was created', 'success');
                 this.navigateToListView();
             })
-            .catch(() => {
-                this.showToast('Error', 'Please Select Song with license', 'error' );
+            .catch((error) => {
+                this.showToast('Error', error.body.message, 'error');
             });
     }
 

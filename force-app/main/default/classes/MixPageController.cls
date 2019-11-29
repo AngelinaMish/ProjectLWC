@@ -1,4 +1,5 @@
-public with sharing class mixSongsController {
+public with sharing class MixPageController
+{
 
     @AuraEnabled (cacheable = true)
     public static List<Song__c> getSongsList()
@@ -39,14 +40,14 @@ public with sharing class mixSongsController {
         {
             mix.Id = mixId.Id;
             List<Track__c> mixTracks = [
-                SELECT ID, Song__c 
+                SELECT ID, Song__c
                 FROM Track__c 
                 WHERE Mix__c = :mixId.Id 
                 LIMIT 20
             ];
             delete mixTracks;
         }
-        
+
         mix.Name = mixId.Name;
         mix.Customer__c = mixId.Customer__c;
         upsert mix;
@@ -58,7 +59,37 @@ public with sharing class mixSongsController {
             tempTrack.Song__c = songId;
             tracksToCreate.add( tempTrack);
         }
-        
-        insert tracksToCreate;       
+      
+        try
+        {
+            insert tracksToCreate;  
+        }
+        catch (DmlException exc)
+        {
+            String message = 'Error. Please contact your Administrator';
+
+            if (exc.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'))
+            {
+                message = 'Please select song with license. Song without license:';
+                List<Song__c> songs = [
+                    SELECT Track_Licenses__c, Track_Count__c, Name
+                    FROM Song__c 
+                    WHERE Id IN :songsIds
+                ];
+
+                for (Song__c song : songs)
+                {
+                    if ((song.Track_Licenses__c - song.Track_Count__c) < 1) 
+                    {
+                        message = message + ' ' + song.Name + ',';
+                    }
+                }
+
+                message = message.removeEnd(',');
+                message = message + '.';
+            }
+            
+            throw new AuraHandledException(message);
+        }
     }  
 }

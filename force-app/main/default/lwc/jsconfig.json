@@ -20,6 +20,9 @@
             ],
             "c/mixSongsPagination": [
                 "mixSongsPagination/mixSongsPagination.js"
+            ],
+            "c/mixPageButton": [
+                "mixPageButton/mixPageButton.js"
             ]
         }
     },

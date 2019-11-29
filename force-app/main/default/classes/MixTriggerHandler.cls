@@ -14,15 +14,7 @@ public class MixTriggerHandler implements TriggerTemplate.Handler
     {
         if (action == TriggerTemplate.TriggerAction.beforeDelete)
         {
-            // Move it to Mix Trigger Service!
-            // Do not need list here!
-            List<Id> mixesIds = new List<Id>(this.oldValues.keySet());
-            List<Track__c> traksToDelete = [
-                SELECT Id, Song__c
-                FROM Track__C 
-                WHERE Mix__c IN :mixesIds
-                ];
-            delete traksToDelete; 
+           MixService.dleteRelatedTracks(this.oldValues.keySet()); 
         }
     }
 }
