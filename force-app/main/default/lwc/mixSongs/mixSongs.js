@@ -28,6 +28,8 @@ export default class mixSongs extends LightningElement {
     @track songDataLength;
     @track sortBy = 'FirstName';
     @track sortDirection = 'asc';
+    @track isButtonNextDisabled = true;
+    @track isButtonPrevDisabled = true;
 
     didPaginationButtonCauseRowSelectionEvent = false;
 
@@ -73,7 +75,6 @@ export default class mixSongs extends LightningElement {
     }
 
     sortData(fieldname, direction) {
-
         let parseData = JSON.parse(JSON.stringify(this.dataSong));
         let keyValue = (a) => {
             return a[fieldname];
@@ -89,14 +90,18 @@ export default class mixSongs extends LightningElement {
     }
   
     getSelectedRows() {
-
         if (!this.didPaginationButtonCauseRowSelectionEvent) {
             let selectedRowsFromPage = this.template.querySelector('lightning-datatable').getSelectedRows();
             let tempAllSelectedRows = new Set();
             this.allSelectedRows.forEach(row => tempAllSelectedRows.add(row));
-            this.songsPage.forEach(song => tempAllSelectedRows.delete(song));
+            this.songsPage.forEach(function(song) {
+               tempAllSelectedRows.forEach(function(selectedSong) {
+                if (song.Id === selectedSong.Id){
+                    tempAllSelectedRows.delete(selectedSong);
+                } 
+               })
+            });
             selectedRowsFromPage.forEach(row => tempAllSelectedRows.add(row));
-
             if (this.checkLengthAndSize(tempAllSelectedRows)) {
                 this.allSelectedRows = tempAllSelectedRows;
                 this.setDataToSummary();
@@ -179,16 +184,18 @@ export default class mixSongs extends LightningElement {
         this.totalPageNumber = Math.ceil(this.dataSong.length / this.pageSize);
         this.setDataSong(0, this.pageSize);
         this.pageNumber = 1;
-        this.template.querySelector('c-mix-songs-pagination').pageNumber = 1;
+        //this.isButtonNextDisabled = false;
+        //this.isButtonPrevDisabled = true;
         this.template.querySelector('c-mix-songs-pagination').isButtonNextDisabled = false;
+        this.template.querySelector('c-mix-songs-pagination').isButtonPrevDisabled = true;
 
         if (this.totalPageNumber === 1) {
+            //this.isButtonNextDisabled = true;
             this.template.querySelector('c-mix-songs-pagination').isButtonNextDisabled = true;
         }
     }
 
     handleChangeGenre(event) {
-
         if (event.detail.value === 'all') {
             this.dataSong = this.allDataSong;
             this.songDataLength = this.dataSong.length;
@@ -210,7 +217,13 @@ export default class mixSongs extends LightningElement {
 
     setDataSong(start, end) {
         this.songsPage = this.dataSong.slice(start, end);
-        this.didPaginationButtonCauseRowSelectionEvent = true;
+        let selectedRowsFromPage = this.template.querySelector('lightning-datatable').getSelectedRows();
+
+        if (selectedRowsFromPage.length !== 0)
+        {
+            this.didPaginationButtonCauseRowSelectionEvent = true;
+        }
+
         this.setDataToSelectedRows();
     }
 
@@ -232,4 +245,5 @@ export default class mixSongs extends LightningElement {
         this.pageNumber = event.detail.pageNumber;
         this.setDataSong(event.detail.start, event.detail.end);
     }
-    }
+
+}

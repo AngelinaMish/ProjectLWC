@@ -1,6 +1,7 @@
 import { LightningElement, track, api, wire} from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import saveMix from '@salesforce/apex/MixPageController.saveMix';
+import getPageSize from '@salesforce/apex/MixPageController.getPageSize';
 import NAME_FIELD from '@salesforce/schema/Mix__c.Name';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -13,12 +14,19 @@ export default class mixPage extends LightningElement {
     @track trackCount;
     @track mixLength;
     @track songsIds;
-
+    @track pageSize;
+    
     mixDetails;
     errorFromMixDetails;
+    
 
     @wire(getRecord, { recordId: '$recordId', fields })
     mix;
+
+    @wire(getPageSize)
+    setPageSize(value) {
+        this.pageSize = value.data;
+    }
 
     get name() {
         let returnName = getFieldValue(this.mix.data, NAME_FIELD);

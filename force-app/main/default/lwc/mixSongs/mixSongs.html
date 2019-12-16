@@ -7,7 +7,6 @@
             options={genres}
             placeholder="Select Genre"
             onchange={handleChangeGenre}
-            style="overflow: initial; max-width: 350px;"
             class="slds-p-bottom_large slds-p-left_large">
         </lightning-combobox>
         <lightning-datatable
@@ -27,7 +26,9 @@
                 page-size={pageSize} 
                 page-number={pageNumber} 
                 song-data-length={songDataLength} 
-                total-page-number={totalPageNumber}>
+                total-page-number={totalPageNumber}
+                is-button-next-disabled={isButtonNextDisabled}
+                is-button-prev-disabled={isButtonPrevDisabled}>
            </c-mix-songs-pagination>
         </div>
     </div>

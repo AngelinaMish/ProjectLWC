@@ -36,8 +36,8 @@ public class TrackService
     {
         List<Mix__c> mixesToUpdate = new List<Mix__c>();
         Map<Id,List<Id>> songsIdsByMixesIds = getSongsIdsByMixesIds(tracks);
-        
-         for (Id mixId : songsIdsByMixesIds.keySet())
+
+        for (Id mixId : songsIdsByMixesIds.keySet())
         {
             Map<String, Integer> genreValues = new Map<String,Integer>();
             List<String> primarAndSecondaryGenre = new List<String>();

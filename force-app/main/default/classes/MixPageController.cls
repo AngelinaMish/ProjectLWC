@@ -12,6 +12,14 @@ public with sharing class MixPageController
     }
 
     @AuraEnabled (cacheable = true)
+    public static Integer getPageSize()
+    {
+        MixPage__c mixPage = MixPage__c.getInstance(UserInfo.getProfileId());
+        System.debug(mixPage.Page_Size__c.intValue());
+        return mixPage.Page_Size__c.intValue();
+    }
+
+    @AuraEnabled (cacheable = true)
     public static List<String> getTrackList(String mixId)
     {
         List<String> songsIds = new List<String>();

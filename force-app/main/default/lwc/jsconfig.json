@@ -9,8 +9,14 @@
             "c/mixPage": [
                 "mixPage/mixPage.js"
             ],
+            "c/mixPageButton": [
+                "mixPageButton/mixPageButton.js"
+            ],
             "c/mixSongs": [
                 "mixSongs/mixSongs.js"
+            ],
+            "c/mixSongsPagination": [
+                "mixSongsPagination/mixSongsPagination.js"
             ],
             "c/mixSummary": [
                 "mixSummary/mixSummary.js"
@@ -18,11 +24,8 @@
             "c/Leaflet": [
                 "../staticresources/Leaflet/Leaflet.js"
             ],
-            "c/mixSongsPagination": [
-                "mixSongsPagination/mixSongsPagination.js"
-            ],
-            "c/mixPageButton": [
-                "mixPageButton/mixPageButton.js"
+            "c/mixHeader": [
+                "mixHeader/mixHeader.js"
             ]
         }
     },
