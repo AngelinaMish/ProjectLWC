@@ -39,25 +39,31 @@ public with sharing class MixPageController
     }
 
     @AuraEnabled
-    public static void saveMix(List<String> songsIds, Mix__c mixId)
+    public static void saveMix(List<String> songsIds, String mixId, String mixName, String mixCustomer)
     {
         List<Track__c> tracksToCreate = new List<Track__c>();
         Mix__c mix = new Mix__c();
 
-        if(String.isNotEmpty(mixId.Id))
+        if(String.isNotEmpty(mixId))
         {
-            mix.Id = mixId.Id;
+            mix.Id = mixId; 
             List<Track__c> mixTracks = [
                 SELECT ID, Song__c
                 FROM Track__c 
-                WHERE Mix__c = :mixId.Id 
+                WHERE Mix__c = : mixId
                 LIMIT 20
             ];
             delete mixTracks;
         }
 
-        mix.Name = mixId.Name;
-        mix.Customer__c = mixId.Customer__c;
+        if (songsIds.isEmpty())
+        {
+            mix.Primary_Genre__c = '';
+            mix.Secondary_Genre__c = '';
+        }
+
+        mix.Name = mixName;
+        mix.Customer__c = mixCustomer;
         upsert mix;
 
         for (String songId : songsIds)

@@ -15,7 +15,7 @@ export default class mixPage extends LightningElement {
     @track mixLength;
     @track songsIds;
     @track pageSize;
-    
+
     mixDetails;
     errorFromMixDetails;
     
@@ -45,7 +45,7 @@ export default class mixPage extends LightningElement {
             this.mixDetails = {
                 "Id": this.recordId,
                 "Name": event.detail.name,
-                "Customer__c": event.detail.contact
+                "Customer": event.detail.contact
             }
         }
     }
@@ -58,8 +58,10 @@ export default class mixPage extends LightningElement {
         }
 
         saveMix({
-                songsIds: Array.from(this.songsIds),
-                mixId: this.mixDetails
+                songsIds : Array.from(this.songsIds),
+                mixId : this.mixDetails.Id,
+                mixName : this.mixDetails.Name,
+                mixCustomer : this.mixDetails.Customer
             })
             .then(() => {
                 this.showToast('Success', 'Mix was created', 'success');

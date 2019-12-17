@@ -12,7 +12,7 @@ public class TrackTriggerHandler implements TriggerTemplate.Handler {
 
     public void handle(TriggerTemplate.TriggerAction action)
     {
-        if (action == TriggerTemplate.TriggerAction.afterInsert)
+        if (action == TriggerTemplate.TriggerAction.beforeInsert)
         {
             TrackService.updateRelatedFieldsForInsert(this.newValues);
         } 
