@@ -1,3 +1,0 @@
-<aura:component implements = "force:hasRecordId,flexipage:availableForAllPageTypes">
-<div>test</div>
-</aura:component>

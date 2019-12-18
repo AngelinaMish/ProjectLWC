@@ -1,34 +1,38 @@
-<!--FORMAT HTML + JS, REMOVE UNNECESSARY VARIABLES-->
-<!--Create new component for Save and Cancel Buttons-->
-<!--FIX NAMES OF VARIABLES!!-->
-<!--Check documentation about QUERY SELECTOR-->
 <template>
     <lightning-card>
-        {name}
-    </lightning-card>
-    <lightning-card >
-        <div class="slds-align_absolute-center">
-                <lightning-button label='Save' onclick={handleSaveClick} style="padding-right: 20px;"></lightning-button>
-                <lightning-button label='Cancel' onclick={navigateToListView} ></lightning-button>
-        </div> 
+        <c-mix-header 
+            name={name}>
+        </c-mix-header>
     </lightning-card>
     <lightning-card>
-        <c-mix-details record-id={recordId} onmixdetails={setMixDetails} onshowtoast={showToastHandler}>
+        <c-mix-page-button 
+            onsave={handleSaveClick} 
+            oncancel={navigateToListView}>
+        </c-mix-page-button>
+    </lightning-card>
+    <lightning-card>
+        <c-mix-details 
+            record-id={recordId} 
+            onmixdetails={setMixDetails} 
+            onshowtoast={showToastHandler}>
         </c-mix-details>
     </lightning-card>
     <lightning-card>
-        <c-mix-summary >
+        <c-mix-summary>
         </c-mix-summary>
     </lightning-card>
     <lightning-card>
-        <c-mix-songs record-id={recordId} page-size=5 onselected ={rowSelectedHandler} onshowtoast={showToastHandler}>
+        <c-mix-songs 
+            record-id={recordId} 
+            page-size={pageSize} 
+            onselected={rowSelectedHandler} 
+            onshowtoast={showToastHandler}>
         </c-mix-songs>
     </lightning-card>
-    <lightning-card >
-        <div class="slds-align_absolute-center">
-                <lightning-button label='Save' onclick={handleSaveClick} style="padding-right: 20px;"></lightning-button>
-                <lightning-button label='Cancel' onclick={navigateToListView}></lightning-button>
-        </div> 
+    <lightning-card>
+        <c-mix-page-button 
+            onsave={handleSaveClick} 
+            oncancel={navigateToListView}>
+        </c-mix-page-button>
     </lightning-card>
-    
 </template>

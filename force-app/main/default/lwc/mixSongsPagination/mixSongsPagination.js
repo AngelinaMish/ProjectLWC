@@ -1,11 +1,10 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement, api } from 'lwc';
 
 export default class MixSongsPagination extends LightningElement {
 
-    @track pageNumber = 1;
-    @track isButtonPrevDisabled = true;
-
-    @api isButtonNextDisabled = false;
+    @api pageNumber;
+    @api isButtonPrevDisabled;
+    @api isButtonNextDisabled;
     @api totalPageNumber;
     @api pageSize;
     @api songDataLength;
@@ -22,7 +21,6 @@ export default class MixSongsPagination extends LightningElement {
 
     handleNextPage() {
         this.pageNumber = this.pageNumber + 1;
-        console.log(this.totalPageNumber);
         if (this.pageNumber === this.totalPageNumber) {
             this.handleLastPage();
         } else {
@@ -32,9 +30,8 @@ export default class MixSongsPagination extends LightningElement {
     }
 
     handleFirstPage() {
-
         this.pageNumber = 1;
-        this.setPage(0,  this.pageSize);
+        this.setPage(0, this.pageSize);
         this.isButtonPrevDisabled = true;
         if (this.totalPageNumber > 1) {
             this.isButtonNextDisabled = false;
@@ -42,7 +39,6 @@ export default class MixSongsPagination extends LightningElement {
     }
 
     handleLastPage() {
-
         this.pageNumber = this.totalPageNumber;
         this.setPage((this.pageNumber - 1) * this.pageSize, this.songDataLength);
         this.isButtonNextDisabled = true;
@@ -51,15 +47,13 @@ export default class MixSongsPagination extends LightningElement {
         }
     }
 
-    setPage(start, end)
-    {
-        console.log(start, end);
+    setPage(start, end) {
         const detail = {
-            pageNumber : this.pageNumber,
-            start : start,
-            end : end
+            pageNumber: this.pageNumber,
+            start: start,
+            end: end
         }
-        const  setPageEvent = new CustomEvent('setpage', { detail : detail});
+        const setPageEvent = new CustomEvent('setpage', { detail: detail });
         this.dispatchEvent(setPageEvent);
     }
 }

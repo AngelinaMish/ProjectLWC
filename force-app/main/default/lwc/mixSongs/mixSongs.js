@@ -1,101 +1,139 @@
 import { LightningElement, track, wire, api} from 'lwc';
-import getSongsList from '@salesforce/apex/mixSongsController.getSongsList';
-import getTrackList from '@salesforce/apex/mixSongsController.getTrackList';
+import getSongsList from '@salesforce/apex/MixPageController.getSongsList';
+import getTrackList from '@salesforce/apex/MixPageController.getTrackList';
 
 const COLS = [
-    { label: 'Song Name', fieldName: 'Name' },
-    { label: 'Genre', fieldName: 'Genre__c' },
-    { label: 'Artist', fieldName: 'Artist__c'},
-    { label: 'Length (m)', fieldName: 'Length_m__c', type: 'number', cellAttributes: { alignment: 'left' }},
-    { label: 'Track License', fieldName: 'Track_Licenses__c', type: 'number', cellAttributes: { alignment: 'left' }}
+    { label: 'Song Name', fieldName: 'Name', sortable : true },
+    { label: 'Genre', fieldName: 'Genre__c', sortable : true },
+    { label: 'Artist', fieldName: 'Artist__c', sortable : true },
+    { label: 'Length (m)', fieldName: 'Length_m__c', sortable : true, type: 'number', cellAttributes: { alignment: 'left' }},
+    { label: 'Track License', fieldName: 'Track_Licenses__c', sortable : true, type: 'number', cellAttributes: { alignment: 'left' }}
 ];
 
 export default class mixSongs extends LightningElement {
 
     @api recordId;
+    @api pageSize;
+
     @track dataSong = [];
     @track columns = COLS;
     @track pageNumber = 1;
     @track totalPageNumber;
-    // Remove hardcode from pageSize, mark it as api
-    @api pageSize;
-    @track songsList = [];
+    @track songsPage = [];
     @track valueGenre;
-    @track genreList = [];
+    @track genres = [];
     @track allDataSong = [];
     @track selectedRows = [];
-    @track selectedRowsSet = new Set ();
+    @track allSelectedRows = new Set();
     @track songDataLength;
+    @track sortBy = 'FirstName';
+    @track sortDirection = 'asc';
+    @track isButtonNextDisabled = true;
+    @track isButtonPrevDisabled = true;
+
     didPaginationButtonCauseRowSelectionEvent = false;
 
     @wire(getSongsList)
     wiredSongsList(result) {
         if (result.data) {
-            getTrackList({mixId: this.recordId})
-            .then ((listSelectedSongs) => {
-                this.allDataSong = result.data;
-                this.dataSong = this.allDataSong;
-                this.songDataLength = this.dataSong.length;
-                this.setSelectedRows(listSelectedSongs, result.data);
-                this.setTableSong();
-                this.setDataToSummary();
-                this.setGenre();
-                this.didPaginationButtonCauseRowSelectionEvent = false;
-            })
-            .catch((error) => {
-                this.fireShowToast(error);
-            });
+            getTrackList({
+                    mixId: this.recordId
+                })
+                .then((listSelectedSongs) => {
+                    this.allDataSong = result.data;
+                    this.dataSong = this.allDataSong;
+                    this.songDataLength = this.dataSong.length;
+                    this.setSelectedRows(listSelectedSongs, result.data);
+                    this.setTableSong();
+                    this.setDataToSummary();
+                    this.setGenre();
+                    this.didPaginationButtonCauseRowSelectionEvent = false;
+                })
+                .catch((error) => {
+                    this.fireShowToast(error);
+                });
         }
     }
 
     setSelectedRows(listSelectedSongs, allSongs) {
-        let tempSelectedRowsSet = [];
-        listSelectedSongs.forEach(function(selectedSong){
-            allSongs.forEach(function(song){
+        let tempAllSelectedRows = [];
+        listSelectedSongs.forEach(function (selectedSong) {
+            allSongs.forEach(function (song) {
 
-                if(song.Id === selectedSong){
-                    tempSelectedRowsSet.push(song);
+                if (song.Id === selectedSong) {
+                    tempAllSelectedRows.push(song);
                 }
             });
         });
-        this.selectedRowsSet = new Set(tempSelectedRowsSet);
+        this.allSelectedRows = new Set(tempAllSelectedRows);
+    }
+
+    handleSortdata(event) {
+        this.sortBy = event.detail.fieldName;
+        this.sortDirection = event.detail.sortDirection;
+        this.sortData(event.detail.fieldName, event.detail.sortDirection);
+    }
+
+    sortData(fieldname, direction) {
+        let parseData = JSON.parse(JSON.stringify(this.dataSong));
+        let keyValue = (a) => {
+            return a[fieldname];
+        };
+        let isReverse = direction === 'asc' ? 1 : -1;
+        parseData.sort((x, y) => {
+            x = keyValue(x) ? keyValue(x) : '';
+            y = keyValue(y) ? keyValue(y) : '';
+            return isReverse * ((x > y) - (y > x));
+        });
+        this.dataSong = parseData;
+        this.setTableSong();
     }
   
     getSelectedRows() {
-
         if (!this.didPaginationButtonCauseRowSelectionEvent) {
-            let selectedRowsFromPage = this.template.querySelector('lightning-datatable').getSelectedRows();     
-            let tempSelectedRowSet = new Set();
-            this.selectedRowsSet.forEach(row => tempSelectedRowSet.add(row));
-            this.songsList.forEach(song => tempSelectedRowSet.delete(song));  
-            selectedRowsFromPage.forEach(row => tempSelectedRowSet.add(row)); 
-
-            if (this.checkLengthAndSize(tempSelectedRowSet)){
-                this.selectedRowsSet =  tempSelectedRowSet ;
+            let selectedRowsFromPage = this.template.querySelector('lightning-datatable').getSelectedRows();
+            let tempAllSelectedRows = new Set();
+            this.allSelectedRows.forEach(row => tempAllSelectedRows.add(row));
+            this.songsPage.forEach(function(song) {
+               tempAllSelectedRows.forEach(function(selectedSong) {
+                if (song.Id === selectedSong.Id){
+                    tempAllSelectedRows.delete(selectedSong);
+                } 
+               })
+            });
+            selectedRowsFromPage.forEach(row => tempAllSelectedRows.add(row));
+            if (this.checkLengthAndSize(tempAllSelectedRows)) {
+                this.allSelectedRows = tempAllSelectedRows;
                 this.setDataToSummary();
-            }
-            else {
+            } else {
                 this.setDataToSelectedRows();
-            }            
-        } else {        
+            }
+        } else {
             this.didPaginationButtonCauseRowSelectionEvent = false;
         }
     }
 
-    checkLengthAndSize( tempSelectedRowSet ) {
-        
+    checkLengthAndSize(tempAllSelectedRows) {
         let tempLength = 0;
         let message;
-        tempSelectedRowSet.forEach(row => (tempLength += row.Length_m__c));
+        tempAllSelectedRows.forEach(row => (tempLength += row.Length_m__c));
 
-        if (tempLength > 90)  {
-            message = {title: 'Warning', message: 'Maximun songs length is 90', variant: 'warning'};
+        if (tempLength > 90) {
+            message = {
+                title: 'Warning',
+                message: 'Maximun songs length is 90',
+                variant: 'warning'
+            };
             this.fireShowToast(message);
             return false;
         }
 
-        if (tempSelectedRowSet.size > 20) {
-            message = {title: 'Warning', message: 'Maximun songs count is 20', variant: 'warning'};
+        if (tempAllSelectedRows.size > 20) {
+            message = {
+                title: 'Warning',
+                message: 'Maximun songs count is 20',
+                variant: 'warning'
+            };
             this.fireShowToast(message);
             return false;
         }
@@ -104,85 +142,108 @@ export default class mixSongs extends LightningElement {
     }
 
     fireShowToast(message) {
-
-        const  showToastEvent = new CustomEvent('showtoast', { detail:  message});
+        const showToastEvent = new CustomEvent('showtoast', {
+            detail: message
+        });
         this.dispatchEvent(showToastEvent);
     }
 
     setDataToSummary() {
-
         let tempLength = 0;
         let tempIdsSongs = [];
-        this.selectedRowsSet.forEach(function(row) {
+        this.allSelectedRows.forEach(function (row) {
             tempLength = tempLength + row.Length_m__c;
             tempIdsSongs.push(row.Id);
         });
-        let summary = {size: this.selectedRowsSet.size, length: tempLength, songsIds: tempIdsSongs}
-        const  selectedEvent = new CustomEvent('selected', { detail: summary });
+        let summary = {
+            size: this.allSelectedRows.size,
+            length: tempLength,
+            songsIds: tempIdsSongs
+        }
+        const selectedEvent = new CustomEvent('selected', {
+            detail: summary
+        });
         this.dispatchEvent(selectedEvent);
     }
 
     setGenre() {
-        let genreSet = new Set ();
-        let genreTempList = [{label: 'all', value: 'all'}] 
-        this.dataSong.forEach(song =>  genreSet.add( song.Genre__c));
-        genreSet.forEach(song => genreTempList.push({label: song, value: song}));
-        this.genreList = genreTempList;
+        let genresSongs = new Set();
+        let genresTemp = [{
+            label: 'all',
+            value: 'all'
+        }]
+        this.dataSong.forEach(song => genresSongs.add(song.Genre__c));
+        genresSongs.forEach(song => genresTemp.push({
+            label: song,
+            value: song
+        }));
+        this.genres = genresTemp;
     }
 
     setTableSong() {
-        this.totalPageNumber = Math.ceil(this.dataSong.length/this.pageSize);
+        this.totalPageNumber = Math.ceil(this.dataSong.length / this.pageSize);
         this.setDataSong(0, this.pageSize);
         this.pageNumber = 1;
+        //this.isButtonNextDisabled = false;
+        //this.isButtonPrevDisabled = true;
+        this.template.querySelector('c-mix-songs-pagination').isButtonNextDisabled = false;
+        this.template.querySelector('c-mix-songs-pagination').isButtonPrevDisabled = true;
 
-        if (this.totalPageNumber === 1){
+        if (this.totalPageNumber === 1) {
+            //this.isButtonNextDisabled = true;
             this.template.querySelector('c-mix-songs-pagination').isButtonNextDisabled = true;
         }
     }
 
     handleChangeGenre(event) {
-
-        if (event.detail.value === 'all'){
+        if (event.detail.value === 'all') {
             this.dataSong = this.allDataSong;
             this.songDataLength = this.dataSong.length;
             this.setTableSong()
-        }
-        else {
+        } else {
             let dataSongTemp = [];
-            this.valueGenre =  event.detail.value;
-            this.allDataSong.forEach( function(song) {
+            this.valueGenre = event.detail.value;
+            this.allDataSong.forEach(function (song) {
 
-                if(song.Genre__c === event.detail.value){
+                if (song.Genre__c === event.detail.value) {
                     dataSongTemp.push(song);
                 }
             });
             this.dataSong = dataSongTemp;
             this.songDataLength = this.dataSong.length;
             this.setTableSong();
-        }       
+        }
     }
 
     setDataSong(start, end) {
-        this.songsList = this.dataSong.slice(start, end);
-        this.didPaginationButtonCauseRowSelectionEvent = true;
+        this.songsPage = this.dataSong.slice(start, end);
+        let selectedRowsFromPage = this.template.querySelector('lightning-datatable').getSelectedRows();
+
+        if (selectedRowsFromPage.length !== 0)
+        {
+            this.didPaginationButtonCauseRowSelectionEvent = true;
+        }
+
         this.setDataToSelectedRows();
     }
 
     setDataToSelectedRows() {
-        let tempSet = this.selectedRowsSet;
-        let tempSelectedRows  = [];
-        this.songsList.forEach(function(song){ 
+        let tempSet = this.allSelectedRows;
+        let tempSelectedRows = [];
+        this.songsPage.forEach(function (song) {
+            tempSet.forEach(function (selectedSong) {
 
-            if (tempSet.has(song)){
-                tempSelectedRows.push(song.Id)
-            }
+                if (selectedSong.Id === song.Id) {
+                    tempSelectedRows.push(song.Id)
+                }
+            });
         });
         this.selectedRows = tempSelectedRows;
     }
-    
+
     setPage(event) {
-        console.log(event.detail.start, event.detail.end);
         this.pageNumber = event.detail.pageNumber;
         this.setDataSong(event.detail.start, event.detail.end);
     }
+
 }

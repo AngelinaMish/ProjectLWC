@@ -1,29 +1,34 @@
-<!--FIX HTML + JS-->
-<!--Pagination - mote to additional component-->
 <template>
     <div >
         <lightning-combobox 
-                name="genre"
-                label="Song Genre filter"
-                value={valueGenre}
-                options={genreList}
-                placeholder="Select Genre"
-                onchange={handleChangeGenre}
-                style="overflow: initial; max-width: 350px;"
-                class="slds-p-bottom_large">
+            name="genre"
+            label="Song Genre filter"
+            value={valueGenre}
+            options={genres}
+            placeholder="Select Genre"
+            onchange={handleChangeGenre}
+            class="slds-p-bottom_large slds-p-left_large">
         </lightning-combobox>
         <lightning-datatable
-                    key-field="Id"
-                    data={songsList}
-                    columns={columns}
-                    onrowselection={getSelectedRows}
-                    selected-rows={selectedRows}
-                    sorted-by={sortBy}
-                    sorted-direction={sortDirection}
-                    onsort={handleSortdata}>
+            key-field="Id"
+            data={songsPage}
+            columns={columns}
+            sorted-by={sortBy}
+            sorted-direction={sortDirection}
+            onsort={handleSortdata}
+            onrowselection={getSelectedRows}
+            selected-rows={selectedRows}
+            >
         </lightning-datatable>
         <div class="slds-align_absolute-center slds-p-top_small">
-           <c-mix-songs-pagination onsetpage={setPage} page-size={pageSize} song-data-length={songDataLength} total-page-number={totalPageNumber}>
+           <c-mix-songs-pagination 
+                onsetpage={setPage} 
+                page-size={pageSize} 
+                page-number={pageNumber} 
+                song-data-length={songDataLength} 
+                total-page-number={totalPageNumber}
+                is-button-next-disabled={isButtonNextDisabled}
+                is-button-prev-disabled={isButtonPrevDisabled}>
            </c-mix-songs-pagination>
         </div>
     </div>
