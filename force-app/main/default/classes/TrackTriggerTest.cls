@@ -51,7 +51,6 @@ private class TrackTriggerTest
             insert trackTestSecond;
         Test.stopTest();
 
-
     }
 
 }

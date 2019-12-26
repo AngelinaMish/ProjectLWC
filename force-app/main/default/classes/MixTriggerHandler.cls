@@ -14,7 +14,7 @@ public class MixTriggerHandler implements TriggerTemplate.Handler
     {
         if (action == TriggerTemplate.TriggerAction.beforeDelete)
         {
-           MixService.dleteRelatedTracks(this.oldValues.keySet()); 
+           MixService.deleteRelatedTracks(this.oldValues.keySet()); 
         }
     }
 }

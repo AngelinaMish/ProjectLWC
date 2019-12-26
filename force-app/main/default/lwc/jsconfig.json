@@ -26,6 +26,9 @@
             ],
             "c/mixHeader": [
                 "mixHeader/mixHeader.js"
+            ],
+            "c/mixSongSearch": [
+                "mixSongSearch/mixSongSearch.js"
             ]
         }
     },

@@ -47,24 +47,15 @@ public class TrackService
             for (Id song : songsIdsByMixesIds.get(mixId))
             {
                String genre = songsWithGenre.get(song).Genre__c;
-               if (genreValues.get(genre) != null)
-               {
-                   genreValues.put(genre, (genreValues.get(genre) + 1));
-               }
-               else
-               {
-                   genreValues.put(genre, 1);
-               } 
+               Integer genreCount = genreValues.get(genre);
+
+               genreCount = (genreCount != null) ? genreCount+1 : 1;
+               genreValues.put(genre, genreCount);
             }
             
             primarAndSecondaryGenre = sortMapByKeyAndValue(genreValues);
             mix.Primary_Genre__c = primarAndSecondaryGenre[0];
-
-            if(primarAndSecondaryGenre.size() > 1)
-            {
-                mix.Secondary_Genre__c = primarAndSecondaryGenre[1];
-            }
-
+            mix.Secondary_Genre__c = (primarAndSecondaryGenre.size() > 1) ? primarAndSecondaryGenre[1] : null;
             mixesToUpdate.add(mix);
         }
 
@@ -132,29 +123,25 @@ public class TrackService
         {
             Integer count = idSongsAndCounts.get(track.Song__c);
 
-            if(count != null)
-            {
-                idSongsAndCounts.put(track.Song__c, count + 1);
-            }
-            else
-            {
-                idSongsAndCounts.put(track.Song__c, 1);
-            }
+            count = (count != null) ? count + 1 : 1;
+            idSongsAndCounts.put(track.Song__c, count);
         }
 
         for (Song__c song : songs.values())
         {
-            if(isInsert)
-            {
-                song.Track_Count__c += + idSongsAndCounts.get(song.Id);
-            }
-            else 
-            {
-                song.Track_Count__c -= idSongsAndCounts.get(song.Id);
-            }
+            Integer count = idSongsAndCounts.get(song.Id);
+            song.Track_Count__c = (isInsert) ? (song.Track_Count__c + count) : (song.Track_Count__c - count);
         }
         
-        update songs.values();
+        try 
+        {
+            update songs.values();
+        }
+        catch (DmlException dmlException)
+        {
+            tracks[0].addError('FIELD_CUSTOM_VALIDATION_EXCEPTION');
+        }
+        
     } 
 
     public static void updateRelatedFieldsForDelete(List<Track__c> tracksToDelete)

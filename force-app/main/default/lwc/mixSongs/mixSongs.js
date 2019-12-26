@@ -246,4 +246,15 @@ export default class mixSongs extends LightningElement {
         this.setDataSong(event.detail.start, event.detail.end);
     }
 
+    handleSearch(event) {
+        let searchName = event.detail.toLowerCase();
+        let searchTable = this.allDataSong.filter(function(song) {
+            var songName = song.Name.toLowerCase();
+            return songName.includes(searchName);
+        });
+        this.dataSong = searchTable;
+        this.songDataLength = searchTable.length;
+        this.setTableSong();
+    }
+
 }

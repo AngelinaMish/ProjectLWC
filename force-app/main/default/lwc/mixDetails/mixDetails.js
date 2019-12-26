@@ -2,7 +2,12 @@ import { LightningElement, api } from 'lwc';
 
 export default class mixDetails extends LightningElement {
     
+    isReadOnly = true;
+
+    @api secondaryGenre;
+    @api primaryGenre;
     @api recordId;
+
     @api
     getMixDetails() {
         const name = this.template.querySelector('.name').value;

@@ -1,5 +1,6 @@
 public with sharing class MixPageController
 {
+    private static final Integer MAX_COUNT_TRACK = 20;
 
     @AuraEnabled (cacheable = true)
     public static List<Song__c> getSongsList()
@@ -15,7 +16,6 @@ public with sharing class MixPageController
     public static Integer getPageSize()
     {
         MixPage__c mixPage = MixPage__c.getInstance(UserInfo.getProfileId());
-        System.debug(mixPage.Page_Size__c.intValue());
         return mixPage.Page_Size__c.intValue();
     }
 
@@ -27,7 +27,7 @@ public with sharing class MixPageController
             SELECT ID, Song__c 
             FROM Track__c 
             WHERE Mix__c = :mixId 
-            LIMIT 20
+            LIMIT :MAX_COUNT_TRACK
         ];
 
         for(Track__c track : mixTracks)
@@ -39,10 +39,11 @@ public with sharing class MixPageController
     }
 
     @AuraEnabled
-    public static void saveMix(List<String> songsIds, String mixId, String mixName, String mixCustomer)
+    public static Mix__c saveMix(List<String> songsIds, String mixId, String mixName, String mixCustomer)
     {
         List<Track__c> tracksToCreate = new List<Track__c>();
         Mix__c mix = new Mix__c();
+        Map<String, String> genres = new Map<String, String>();
 
         if(String.isNotEmpty(mixId))
         {
@@ -51,7 +52,7 @@ public with sharing class MixPageController
                 SELECT ID, Song__c
                 FROM Track__c 
                 WHERE Mix__c = : mixId
-                LIMIT 20
+                LIMIT :MAX_COUNT_TRACK
             ];
             delete mixTracks;
         }
@@ -76,7 +77,12 @@ public with sharing class MixPageController
       
         try
         {
-            insert tracksToCreate;  
+            insert tracksToCreate;
+            return [
+                SELECT Primary_Genre__c, Secondary_Genre__c 
+                FROM Mix__c 
+                WHERE Id =: mixId
+            ];  
         }
         catch (DmlException exc)
         {

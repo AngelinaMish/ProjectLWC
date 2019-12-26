@@ -7,8 +7,12 @@
             options={genres}
             placeholder="Select Genre"
             onchange={handleChangeGenre}
-            class="slds-p-bottom_large slds-p-left_large">
+            class="slds-p-bottom_medium slds-p-left_large">
         </lightning-combobox>
+        <div>
+            <c-mix-song-search onsearch={handleSearch}>
+            </c-mix-song-search>
+        </div>   
         <lightning-datatable
             key-field="Id"
             data={songsPage}

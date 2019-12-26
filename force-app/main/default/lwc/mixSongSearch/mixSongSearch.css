@@ -1,0 +1,10 @@
+.search-name {
+    max-width: 350px;
+}
+lightning-input {
+    position: inherit;
+    
+}
+.child {
+    display: inline-block;
+}
