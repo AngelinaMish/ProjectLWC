@@ -1,5 +1,6 @@
 public with sharing class MixService 
 {
+
     public static void deleteRelatedTracks(Set<Id> mixesIds) 
     {
         List<Track__c> tracksToDelete = [
@@ -9,4 +10,5 @@ public with sharing class MixService
         ];
         delete tracksToDelete; 
     }
+    
 }

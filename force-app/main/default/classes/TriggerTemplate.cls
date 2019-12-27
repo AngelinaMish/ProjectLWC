@@ -1,5 +1,6 @@
 global without sharing class TriggerTemplate
 {
+	
 	public enum TriggerAction
 	{
 		afterdelete, afterinsert, afterundelete,
@@ -9,7 +10,6 @@ global without sharing class TriggerTemplate
 	public interface Handler
 	{
 		void handle(TriggerTemplate.TriggerAction theAction);
-		
 		void setValues(List<sObject> theNewValues, Map<Id, sObject> theOldValues);
 		
 	}
@@ -52,7 +52,8 @@ global without sharing class TriggerTemplate
 				{
 					theAction = TriggerTemplate.TriggerAction.beforedelete;
 				}
-			} else if (Trigger.isAfter)
+			} 
+			else if (Trigger.isAfter)
 			{
 				if (Trigger.isInsert)
 				{
@@ -80,4 +81,5 @@ global without sharing class TriggerTemplate
 			}
 		}
 	}
+
 }

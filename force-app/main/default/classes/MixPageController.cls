@@ -1,6 +1,8 @@
 public with sharing class MixPageController
 {
+    
     private static final Integer MAX_COUNT_TRACK = 20;
+    private static final String VAlIDATION_EXCEPTION = 'FIELD_CUSTOM_VALIDATION_EXCEPTION';
 
     @AuraEnabled (cacheable = true)
     public static List<Song__c> getSongsList()
@@ -30,7 +32,7 @@ public with sharing class MixPageController
             LIMIT :MAX_COUNT_TRACK
         ];
 
-        for(Track__c track : mixTracks)
+        for (Track__c track : mixTracks)
         {
             songsIds.add(track.Song__c);
         }
@@ -43,9 +45,8 @@ public with sharing class MixPageController
     {
         List<Track__c> tracksToCreate = new List<Track__c>();
         Mix__c mix = new Mix__c();
-        Map<String, String> genres = new Map<String, String>();
 
-        if(String.isNotEmpty(mixId))
+        if (String.isNotEmpty(mixId))
         {
             mix.Id = mixId; 
             List<Track__c> mixTracks = [
@@ -84,32 +85,41 @@ public with sharing class MixPageController
                 WHERE Id =: mixId
             ];  
         }
-        catch (DmlException exc)
+        catch (DmlException dmlException)
         {
-            String message = 'Error. Please contact your Administrator';
-
-            if (exc.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'))
-            {
-                message = 'Please select song with license. Song without license:';
-                List<Song__c> songs = [
-                    SELECT Track_Licenses__c, Track_Count__c, Name
-                    FROM Song__c 
-                    WHERE Id IN :songsIds
-                ];
-
-                for (Song__c song : songs)
-                {
-                    if ((song.Track_Licenses__c - song.Track_Count__c) < 1) 
-                    {
-                        message = message + ' ' + song.Name + ',';
-                    }
-                }
-
-                message = message.removeEnd(',');
-                message = message + '.';
-            }
-            
+            String message = isValidationException(dmlException.getMessage(), songsIds);
             throw new AuraHandledException(message);
         }
-    }  
+    } 
+
+    private static String isValidationException(String exceptionMessage, List<Id> songsIds)
+    {
+
+        if (exceptionMessage.contains(VAlIDATION_EXCEPTION))
+        {
+            String message = 'Please select song with license. Song without license:';
+            List<Song__c> songs = [
+                SELECT Track_Licenses__c, Track_Count__c, Name
+                FROM Song__c 
+                WHERE Id IN :songsIds
+            ];
+
+            for (Song__c song : songs)
+            {
+                if ((song.Track_Licenses__c - song.Track_Count__c) < 1) 
+                {
+                    message = message + ' ' + song.Name + ',';
+                }
+            }
+
+            message = message.removeEnd(',');
+            message = message + '.';
+            return message;
+        }
+        else 
+        {
+            return 'Error. Please contact your Administrator';
+        }
+    } 
+
 }

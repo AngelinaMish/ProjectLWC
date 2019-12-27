@@ -17,6 +17,7 @@ export default class mixPage extends LightningElement {
     @track pageSize;
     @track primaryGenre;
     @track secondaryGenre;
+    @track isLoaded = true;
 
     mixDetails;
     errorFromMixDetails;
@@ -59,6 +60,7 @@ export default class mixPage extends LightningElement {
             return;
         }
 
+        this.isLoaded = false;
         saveMix({
                 songsIds : Array.from(this.songsIds),
                 mixId : this.mixDetails.Id,
@@ -66,20 +68,22 @@ export default class mixPage extends LightningElement {
                 mixCustomer : this.mixDetails.Customer
             })
             .then(mix => {
+                let isRedirect = event.detail;
                 this.showToast('Success', 'Mix was created', 'success');
 
-                if (event.detail) {
+                if (isRedirect) {
                     this.navigateToListView();
                 }
                 else {
-                    console.log ( mix);
-                    this.primaryGenre = mix.Primary_Genre__c;
-                    this.secondaryGenre = mix.Secondary_Genre__c;
+                    this.primaryGenre = (mix.Primary_Genre__c === undefined) ? '' : mix.Primary_Genre__c;
+                    this.secondaryGenre = (mix.Secondary_Genre__c === undefined) ? '' : mix.Secondary_Genre__c;
                 }
-                
             })
             .catch((error) => {
                 this.showToast('Error', error.body.message, 'error');
+            })
+            .finally(() => {
+                this.isLoaded = true;
             });
     }
 

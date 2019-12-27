@@ -1,5 +1,8 @@
 public class TrackService
- {
+{
+
+    private static final String VAlIDATION_EXCEPTION = 'FIELD_CUSTOM_VALIDATION_EXCEPTION';
+
     public static void updateRelatedFieldsForInsert(List<Track__c> tracks)
     { 
         Map<Id, Song__c> songsWithGenre = new Map <Id, Song__c>();
@@ -8,9 +11,9 @@ public class TrackService
         updateMixGengre(tracks, songsWithGenre);
     }
 
-    public static Map<Id,List<Id>> getSongsIdsByMixesIds(List<Track__c> tracks)
+    public static Map<Id, List<Id>> getSongsIdsByMixesIds(List<Track__c> tracks)
     {
-        Map<Id,List<Id>> songsIdsByMixesIds = new Map<Id,List<Id>>();
+        Map<Id, List<Id>> songsIdsByMixesIds = new Map<Id, List<Id>>();
 
         for (Track__c track : tracks)
         {
@@ -35,7 +38,7 @@ public class TrackService
     public static void updateMixGengre(List<Track__c> tracks, Map<Id, Song__c> songsWithGenre)
     {
         List<Mix__c> mixesToUpdate = new List<Mix__c>();
-        Map<Id,List<Id>> songsIdsByMixesIds = getSongsIdsByMixesIds(tracks);
+        Map<Id, List<Id>> songsIdsByMixesIds = getSongsIdsByMixesIds(tracks);
 
         for (Id mixId : songsIdsByMixesIds.keySet())
         {
@@ -48,8 +51,7 @@ public class TrackService
             {
                String genre = songsWithGenre.get(song).Genre__c;
                Integer genreCount = genreValues.get(genre);
-
-               genreCount = (genreCount != null) ? genreCount+1 : 1;
+               genreCount = (genreCount != null) ? (genreCount + 1) : 1;
                genreValues.put(genre, genreCount);
             }
             
@@ -84,11 +86,11 @@ public class TrackService
         {
             Integer value = mapToSort.get(key);
      
-            if (value == primaryCount && String.isEmpty(primaryGenre))
+            if ((value == primaryCount) && String.isEmpty(primaryGenre))
             {
                 primaryGenre = key;     
             } 
-            else if (sizeValues > 1 && value == secondaryCount && String.isEmpty(secondaryGenre))
+            else if ((sizeValues > 1) && (value == secondaryCount) && String.isEmpty(secondaryGenre))
             {
                 secondaryGenre = key;
             }
@@ -122,8 +124,7 @@ public class TrackService
         for (Track__c track : tracks)
         {
             Integer count = idSongsAndCounts.get(track.Song__c);
-
-            count = (count != null) ? count + 1 : 1;
+            count = (count != null) ? (count + 1) : 1;
             idSongsAndCounts.put(track.Song__c, count);
         }
 
@@ -139,9 +140,8 @@ public class TrackService
         }
         catch (DmlException dmlException)
         {
-            tracks[0].addError('FIELD_CUSTOM_VALIDATION_EXCEPTION');
+            tracks[0].addError(VAlIDATION_EXCEPTION);
         }
-        
     } 
 
     public static void updateRelatedFieldsForDelete(List<Track__c> tracksToDelete)
@@ -150,4 +150,5 @@ public class TrackService
         songsIdsToUpdateTrackCount = TrackService.getGenreSongs(tracksToDelete);
         TrackService.updateSongsTrackCount(songsIdsToUpdateTrackCount, tracksToDelete, false);
     }
+
 }

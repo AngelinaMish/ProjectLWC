@@ -1,5 +1,6 @@
 public class MixTriggerHandler implements TriggerTemplate.Handler 
 {
+
     public static Boolean enablesTrigger = true;
     private List<Mix__c> newValues = null;
     private Map<Id, Mix__c> oldValues = null;
@@ -17,4 +18,5 @@ public class MixTriggerHandler implements TriggerTemplate.Handler
            MixService.deleteRelatedTracks(this.oldValues.keySet()); 
         }
     }
+    
 }

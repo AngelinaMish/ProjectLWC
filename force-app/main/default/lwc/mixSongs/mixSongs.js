@@ -28,8 +28,7 @@ export default class mixSongs extends LightningElement {
     @track songDataLength;
     @track sortBy = 'FirstName';
     @track sortDirection = 'asc';
-    @track isButtonNextDisabled = true;
-    @track isButtonPrevDisabled = true;
+    @track isLoaded = false;
 
     didPaginationButtonCauseRowSelectionEvent = false;
 
@@ -51,6 +50,9 @@ export default class mixSongs extends LightningElement {
                 })
                 .catch((error) => {
                     this.fireShowToast(error);
+                })
+                .finally(() => {
+                    this.isLoaded = true;
                 });
         }
     }
@@ -169,8 +171,8 @@ export default class mixSongs extends LightningElement {
     setGenre() {
         let genresSongs = new Set();
         let genresTemp = [{
-            label: 'all',
-            value: 'all'
+            label: 'All',
+            value: 'All'
         }]
         this.dataSong.forEach(song => genresSongs.add(song.Genre__c));
         genresSongs.forEach(song => genresTemp.push({
@@ -184,19 +186,16 @@ export default class mixSongs extends LightningElement {
         this.totalPageNumber = Math.ceil(this.dataSong.length / this.pageSize);
         this.setDataSong(0, this.pageSize);
         this.pageNumber = 1;
-        //this.isButtonNextDisabled = false;
-        //this.isButtonPrevDisabled = true;
         this.template.querySelector('c-mix-songs-pagination').isButtonNextDisabled = false;
         this.template.querySelector('c-mix-songs-pagination').isButtonPrevDisabled = true;
 
         if (this.totalPageNumber === 1) {
-            //this.isButtonNextDisabled = true;
             this.template.querySelector('c-mix-songs-pagination').isButtonNextDisabled = true;
         }
     }
 
     handleChangeGenre(event) {
-        if (event.detail.value === 'all') {
+        if (event.detail.value === 'All') {
             this.dataSong = this.allDataSong;
             this.songDataLength = this.dataSong.length;
             this.setTableSong()
@@ -247,14 +246,27 @@ export default class mixSongs extends LightningElement {
     }
 
     handleSearch(event) {
+
+        let valueGenreQuery = this.template.querySelector('lightning-combobox').value;
         let searchName = event.detail.toLowerCase();
         let searchTable = this.allDataSong.filter(function(song) {
             var songName = song.Name.toLowerCase();
-            return songName.includes(searchName);
+
+            if ((valueGenreQuery !== undefined) && (valueGenreQuery !== 'All')) {
+                return songName.includes(searchName) && (song.Genre__c === valueGenreQuery);
+            }
+            
+            return songName.includes(searchName);  
         });
-        this.dataSong = searchTable;
-        this.songDataLength = searchTable.length;
-        this.setTableSong();
+    
+        if (searchTable.length) {
+            this.dataSong = searchTable;
+            this.songDataLength = searchTable.length;
+            this.setTableSong();
+        }
+        else {
+            this.template.querySelector('c-mix-song-search').setErrorInput();
+        }  
     }
 
 }

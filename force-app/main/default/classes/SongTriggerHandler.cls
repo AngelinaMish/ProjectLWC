@@ -1,5 +1,6 @@
 public class SongTriggerHandler implements TriggerTemplate.Handler 
 {
+
     public static Boolean enablesTrigger = true;
     private List<Song__c> newValues = null;
     private Map<Id, Song__c> oldValues = null;
@@ -17,4 +18,5 @@ public class SongTriggerHandler implements TriggerTemplate.Handler
             SongService.deleteRelatedTracks(this.oldValues.keySet());
         }
     }
+    
 }

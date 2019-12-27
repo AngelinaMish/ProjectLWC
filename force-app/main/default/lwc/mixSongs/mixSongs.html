@@ -1,39 +1,40 @@
 <template>
-    <div >
-        <lightning-combobox 
-            name="genre"
-            label="Song Genre filter"
-            value={valueGenre}
-            options={genres}
-            placeholder="Select Genre"
-            onchange={handleChangeGenre}
-            class="slds-p-bottom_medium slds-p-left_large">
-        </lightning-combobox>
-        <div>
-            <c-mix-song-search onsearch={handleSearch}>
-            </c-mix-song-search>
-        </div>   
-        <lightning-datatable
-            key-field="Id"
-            data={songsPage}
-            columns={columns}
-            sorted-by={sortBy}
-            sorted-direction={sortDirection}
-            onsort={handleSortdata}
-            onrowselection={getSelectedRows}
-            selected-rows={selectedRows}
-            >
-        </lightning-datatable>
-        <div class="slds-align_absolute-center slds-p-top_small">
-           <c-mix-songs-pagination 
-                onsetpage={setPage} 
-                page-size={pageSize} 
-                page-number={pageNumber} 
-                song-data-length={songDataLength} 
-                total-page-number={totalPageNumber}
-                is-button-next-disabled={isButtonNextDisabled}
-                is-button-prev-disabled={isButtonPrevDisabled}>
-           </c-mix-songs-pagination>
-        </div>
+
+    <lightning-combobox 
+        name="genre"
+        label="Song Genre filter"
+        value={valueGenre}
+        options={genres}
+        placeholder="Select Genre"
+        onchange={handleChangeGenre}
+        class="slds-p-bottom_medium slds-p-left_large">
+    </lightning-combobox>
+    <div>
+        <c-mix-song-search onsearch={handleSearch}>
+        </c-mix-song-search>
+    </div>   
+    <lightning-datatable
+        key-field="Id"
+        data={songsPage}
+        columns={columns}
+        sorted-by={sortBy}
+        sorted-direction={sortDirection}
+        onsort={handleSortdata}
+        onrowselection={getSelectedRows}
+        selected-rows={selectedRows}>
+    </lightning-datatable>
+    <div class="slds-align_absolute-center slds-p-top_small">
+        <c-mix-songs-pagination 
+            onsetpage={setPage} 
+            page-size={pageSize} 
+            page-number={pageNumber} 
+            song-data-length={songDataLength} 
+            total-page-number={totalPageNumber}>
+        </c-mix-songs-pagination>
     </div>
+
+    <div if:false={isLoaded}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </div>
+
 </template>

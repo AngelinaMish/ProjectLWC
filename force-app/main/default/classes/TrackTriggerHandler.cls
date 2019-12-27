@@ -1,4 +1,5 @@
-public class TrackTriggerHandler implements TriggerTemplate.Handler {
+public class TrackTriggerHandler implements TriggerTemplate.Handler 
+{
 
     public static Boolean enablesTrigger = true;
     private List<Track__c> newValues = null;
@@ -22,4 +23,5 @@ public class TrackTriggerHandler implements TriggerTemplate.Handler {
             TrackService.updateRelatedFieldsForDelete(this.oldValues.values());
         }
     }
+    
 }

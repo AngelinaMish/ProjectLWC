@@ -10,13 +10,13 @@
                 </div>
             </div>
             <div class="slds-grid slds-grid_align-cente slds-align_absolute-center">
-                    <div class="slds-col">
-                        <lightning-input-field field-name='Primary_Genre__c' value={primaryGenre} disabled={isReadOnly}></lightning-input-field>
-                    </div>
-                    <div class="slds-col">
-                        <lightning-input-field field-name='Secondary_Genre__c' value={secondaryGenre} disabled={isReadOnly}></lightning-input-field>
-                    </div>
+                <div class="slds-col">
+                    <lightning-input-field field-name='Primary_Genre__c' value={primaryGenre} disabled=true;></lightning-input-field>
                 </div>
+                <div class="slds-col">
+                    <lightning-input-field field-name='Secondary_Genre__c' value={secondaryGenre} disabled=true;></lightning-input-field>
+                </div>
+            </div>
         </lightning-record-edit-form>
     </div>
 </template>

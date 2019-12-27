@@ -1,12 +1,17 @@
 <template>
-    <div class="search-name slds-p-bottom_medium slds-p-left_large">
-       <div class="child">
-            <lightning-input type="text" label="Serach by Song Name">
+
+    <div class="search-name slds-grid slds-p-bottom_medium slds-p-left_large">
+
+        <div class="slds-col" onkeyup={handleSearchEnterClick}>
+            <lightning-input type="text" label="Serach by Song Name"> 
             </lightning-input>
         </div>
-        <div class="child slds-p-left_x-small">
+        
+        <div class="slds-col button-search slds-p-left_x-small ">
             <lightning-button variant="brand" label="Search" onclick={handleSearchClick}>
             </lightning-button>
         </div>
+
     </div>
+
 </template>
