@@ -1,0 +1,11 @@
+.search-name {
+    max-width: 350px;
+}
+
+lightning-input {
+    position: inherit;
+}
+
+.button-search {
+    padding-top: 20px;
+}

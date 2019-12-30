@@ -1,19 +1,22 @@
 <template>
-   <div>
-    <lightning-record-edit-form
-        record-id= {recordId}
-        object-api-name="Mix__c">
-        <div class="slds-grid  slds-grid_align-cente slds-align_absolute-center" >
-            <div class="slds-col " style="max-width: 350px; padding-right: 30px;">
-                <lightning-input-field required= {isTrue} field-name='Name' value= {name} ></lightning-input-field>
+    <div>
+        <lightning-record-edit-form record-id={recordId} object-api-name="Mix__c">
+            <div class="slds-grid slds-grid_align-cente slds-align_absolute-center">
+                <div class="slds-col slds slds-p-right_x-small">
+                    <lightning-input-field field-name='Name' class="name"></lightning-input-field>
+                </div>
+                <div class="slds-col">
+                    <lightning-input-field field-name='Customer__c' class="contact"></lightning-input-field>
+                </div>
             </div>
-            <div class="slds-col" style="max-width: 350px;">
-                <lightning-input-field required= {isTrue} field-name='Customer__c' ></lightning-input-field>
+            <div class="slds-grid slds-grid_align-cente slds-align_absolute-center">
+                <div class="slds-col">
+                    <lightning-input-field field-name='Primary_Genre__c' value={primaryGenre} disabled=true;></lightning-input-field>
+                </div>
+                <div class="slds-col">
+                    <lightning-input-field field-name='Secondary_Genre__c' value={secondaryGenre} disabled=true;></lightning-input-field>
+                </div>
             </div>
-        </div>
-         
-      
-    </lightning-record-edit-form>
-</div>
-    
+        </lightning-record-edit-form>
+    </div>
 </template>

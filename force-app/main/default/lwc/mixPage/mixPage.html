@@ -1,24 +1,48 @@
 <template>
-    <lightning-card>
-        {name}
-    </lightning-card>
-    <lightning-card >
-        <div class="slds-align_absolute-center">
-                <lightning-button label='Save' onclick={handleSaveClick} style="padding-right: 20px;"></lightning-button>
-                <lightning-button label='Cancel' onclick={handleSaveClick} ></lightning-button>
-        </div> 
-    </lightning-card>
-    <lightning-card>
-        <c-mix-details record-id= {recordId} name= {name}>
-        </c-mix-details>
-    </lightning-card>
-    <lightning-card>
-        <c-mix-summary>
-        </c-mix-summary>
-    </lightning-card>
-    <lightning-card>
-        <c-mix-songs>
-        </c-mix-songs>
-    </lightning-card>
-    
+
+    <div>
+        <lightning-card>
+            <c-mix-header 
+                name={name}>
+            </c-mix-header>
+        </lightning-card>
+        <lightning-card>
+            <c-mix-page-button 
+                onsave={handleSaveClick} 
+                oncancel={navigateToListView}>
+            </c-mix-page-button>
+        </lightning-card>
+        <lightning-card>
+            <c-mix-details 
+                record-id={recordId} 
+                onmixdetails={setMixDetails} 
+                onshowtoast={showToastHandler}
+                primary-genre={primaryGenre}
+                secondary-genre={secondaryGenre}>
+            </c-mix-details>
+        </lightning-card>
+        <lightning-card>
+            <c-mix-summary>
+            </c-mix-summary>
+        </lightning-card>
+        <lightning-card>
+            <c-mix-songs 
+                record-id={recordId} 
+                page-size={pageSize} 
+                onselected={rowSelectedHandler} 
+                onshowtoast={showToastHandler}>
+            </c-mix-songs>
+        </lightning-card> 
+        <lightning-card>
+            <c-mix-page-button 
+                onsave={handleSaveClick} 
+                oncancel={navigateToListView}>
+            </c-mix-page-button>
+        </lightning-card>
+    </div>
+
+    <div if:false={isLoaded}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </div>
+
 </template>

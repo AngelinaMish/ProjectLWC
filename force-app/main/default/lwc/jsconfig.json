@@ -3,17 +3,32 @@
         "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
+            "c/mixDetails": [
+                "mixDetails/mixDetails.js"
+            ],
             "c/mixPage": [
                 "mixPage/mixPage.js"
             ],
-            "c/mixDetails": [
-                "mixDetails/mixDetails.js"
+            "c/mixPageButton": [
+                "mixPageButton/mixPageButton.js"
+            ],
+            "c/mixSongs": [
+                "mixSongs/mixSongs.js"
+            ],
+            "c/mixSongsPagination": [
+                "mixSongsPagination/mixSongsPagination.js"
             ],
             "c/mixSummary": [
                 "mixSummary/mixSummary.js"
             ],
-            "c/mixSongs": [
-                "mixSongs/mixSongs.js"
+            "c/Leaflet": [
+                "../staticresources/Leaflet/Leaflet.js"
+            ],
+            "c/mixHeader": [
+                "mixHeader/mixHeader.js"
+            ],
+            "c/mixSongSearch": [
+                "mixSongSearch/mixSongSearch.js"
             ]
         }
     },
